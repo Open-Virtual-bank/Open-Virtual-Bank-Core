@@ -1,6 +1,6 @@
 ---
 name: 공통 issue template
-about: Describe this issue template's purpose here.
+about: 멀티모듈 구조에 맞춘 이슈 등록 템플릿
 title: '[Type] 모듈명 - 간결한 설명'
 labels: ''
 assignees: ''
