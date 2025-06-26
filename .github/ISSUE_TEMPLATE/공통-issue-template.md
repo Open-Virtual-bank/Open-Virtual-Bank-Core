@@ -1,7 +1,7 @@
 ---
 name: 공통 issue template
 about: Describe this issue template's purpose here.
-title: ''
+title: '[Type] 모듈명 - 간결한 설명'
 labels: ''
 assignees: ''
 
