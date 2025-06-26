@@ -1,0 +1,44 @@
+package openvirtualbank.site.domain.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "transaction")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Transaction {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transaction_id")
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_account_id")
+    private BankAccount bankAccount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "counter_bank_account_id")
+    private BankAccount counterBankAccount;
+
+    @Column(nullable = false)
+    private BigDecimal amount;
+
+    @Column(nullable = false)
+    private String status;
+
+    private String description;
+
+    @Column(name = "requested_at", nullable = false)
+    private LocalDateTime requestedAt;
+
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
+}
