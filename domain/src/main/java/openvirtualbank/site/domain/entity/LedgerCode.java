@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LedgerCode {
+public class LedgerCode extends BaseEntity {
 
     @Id
     @Column(name = "ledger_code", length = 20)
