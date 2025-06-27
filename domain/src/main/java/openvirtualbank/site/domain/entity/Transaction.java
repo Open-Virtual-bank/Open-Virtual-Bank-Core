@@ -20,13 +20,9 @@ public class Transaction extends BaseEntity {
     @Column(name = "transaction_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bank_account_id")
-    private BankAccount bankAccount;
+    private Long bankAccount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "counter_bank_account_id")
-    private BankAccount counterBankAccount;
+    private Long counterBankAccount;
 
     @Column(nullable = false)
     private BigDecimal amount;
