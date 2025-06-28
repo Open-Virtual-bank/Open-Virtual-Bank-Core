@@ -2,6 +2,7 @@ package openvirtualbank.site.domain.global.error;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.*;
+import org.springframework.validation.FieldError;
 
 
 import java.time.LocalDateTime;
@@ -15,10 +16,10 @@ public class ErrorResponse {
     private String message;
     private String method;
     private String requestURI;
-    private List<FieldError> errors;
+    private List<FieldErrorResponse> errors;
 
     @Builder
-    public ErrorResponse(ErrorCode errorCode, HttpServletRequest request, List<FieldError> errors) {
+    public ErrorResponse(ErrorCode errorCode, HttpServletRequest request, List<FieldErrorResponse> errors) {
         this.timestamp = LocalDateTime.now();
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
@@ -36,7 +37,7 @@ public class ErrorResponse {
         this.requestURI = request.getRequestURI();
     }
 
-    public static ErrorResponse of(ErrorCode errorCode, HttpServletRequest request, List<FieldError> errors) {
+    public static ErrorResponse of(ErrorCode errorCode, HttpServletRequest request, List<FieldErrorResponse> errors) {
         return new ErrorResponse(errorCode, request, errors);
     }
 
@@ -46,12 +47,12 @@ public class ErrorResponse {
 
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class FieldError {
+    public static class FieldErrorResponse {
         private final String field;
         private final String reason;
 
-        public static FieldError of(FieldError fieldError) {
-            return new FieldError(fieldError.field, fieldError.reason);
+        public static FieldErrorResponse of(FieldError fieldError) {
+            return new FieldErrorResponse(fieldError.getField(), fieldError.getDefaultMessage());
         }
     }
 
