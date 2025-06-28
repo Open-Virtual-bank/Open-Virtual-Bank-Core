@@ -1,10 +1,10 @@
 package openvirtualbank.site.domain.global.error;
 
-
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import openvirtualbank.site.domain.global.common.ApiResponse;
 import openvirtualbank.site.domain.global.error.ErrorResponse.FieldErrorResponse;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -20,62 +20,67 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
-
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    //유효성 검사 실패
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        HttpServletRequest httpRequest = ((ServletWebRequest) request).getRequest();
+	//유효성 검사 실패
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+		HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+		HttpServletRequest httpRequest = ((ServletWebRequest)request).getRequest();
 
-        List<FieldErrorResponse> fieldErrors = ex.getBindingResult().getFieldErrors()
-                .stream().map(FieldErrorResponse::of).toList();
-        List<String> errors = fieldErrors.stream().map(FieldErrorResponse::getField).toList();
+		List<FieldErrorResponse> fieldErrors = ex.getBindingResult().getFieldErrors()
+			.stream().map(FieldErrorResponse::of).toList();
+		List<String> errors = fieldErrors.stream().map(FieldErrorResponse::getField).toList();
 
-        log.error("[MethodArgumentNotValidException] : {}", errors);
-        log.error("[MethodArgumentNotValidException] 발생 지점 : {} | {} ", httpRequest.getMethod(), httpRequest.getRequestURI());
+		log.error("[MethodArgumentNotValidException] : {}", errors);
+		log.error("[MethodArgumentNotValidException] 발생 지점 : {} | {} ", httpRequest.getMethod(),
+			httpRequest.getRequestURI());
 
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_VALID, httpRequest, fieldErrors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(errorResponse));
-    }
+		ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_VALID, httpRequest, fieldErrors);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(errorResponse));
+	}
 
-    //http 요청으로 온 RequestBody 누락
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        HttpServletRequest httpRequest = ((ServletWebRequest) request).getRequest();
+	//http 요청으로 온 RequestBody 누락
+	@Override
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+		HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+		HttpServletRequest httpRequest = ((ServletWebRequest)request).getRequest();
 
-        log.error("[HttpMessageNotReadableException] : {}", ex.getMessage());
-        log.error("[HttpMessageNotReadableException] 발생 지점 : {} | {} ", httpRequest.getMethod(), httpRequest.getRequestURI());
+		log.error("[HttpMessageNotReadableException] : {}", ex.getMessage());
+		log.error("[HttpMessageNotReadableException] 발생 지점 : {} | {} ", httpRequest.getMethod(),
+			httpRequest.getRequestURI());
 
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.REQUEST_BODY_NOT_VALID, httpRequest);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(errorResponse));
-    }
+		ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.REQUEST_BODY_NOT_VALID, httpRequest);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(errorResponse));
+	}
 
+	//존재하지 않는 url 요청
+	@Override
+	protected ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex, HttpHeaders headers,
+		HttpStatusCode status, WebRequest request) {
+		HttpServletRequest httpRequest = ((ServletWebRequest)request).getRequest();
 
-    //존재하지 않는 url 요청
-    @Override
-    protected ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        HttpServletRequest httpRequest = ((ServletWebRequest) request).getRequest();
+		log.error("[NoResourceFoundException] : {}", ex.getMessage());
+		log.error("[NoResourceFoundException] 발생 지점 : {} | {} ", httpRequest.getMethod(), httpRequest.getRequestURI());
 
-        log.error("[NoResourceFoundException] : {}", ex.getMessage());
-        log.error("[NoResourceFoundException] 발생 지점 : {} | {} ", httpRequest.getMethod(), httpRequest.getRequestURI());
+		ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND, httpRequest);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.failure(errorResponse));
+	}
 
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND, httpRequest);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.failure(errorResponse));
-    }
+	//http 요청으로 온 RequestParameter 누락
+	@Override
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+		HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+		HttpServletRequest httpRequest = ((ServletWebRequest)request).getRequest();
 
-    //http 요청으로 온 RequestParameter 누락
-    @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        HttpServletRequest httpRequest = ((ServletWebRequest) request).getRequest();
+		log.error("[MissingServletRequestParameterException] : {}", ex.getMessage());
+		log.error("[MissingServletRequestParameterException] 발생 지점 : {} | {} ", httpRequest.getMethod(),
+			httpRequest.getRequestURI());
 
-        log.error("[MissingServletRequestParameterException] : {}", ex.getMessage());
-        log.error("[MissingServletRequestParameterException] 발생 지점 : {} | {} ", httpRequest.getMethod(), httpRequest.getRequestURI());
-
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.MISSING_REQUEST_PARAMETER, httpRequest);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(errorResponse));
-    }
+		ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.MISSING_REQUEST_PARAMETER, httpRequest);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(errorResponse));
+	}
 
 }

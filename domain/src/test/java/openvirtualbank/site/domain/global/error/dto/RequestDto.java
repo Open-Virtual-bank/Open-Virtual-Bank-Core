@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class RequestDto {
-    @NotBlank
-    private String name;
+	@NotBlank
+	private String name;
 
 }
