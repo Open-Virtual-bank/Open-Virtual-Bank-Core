@@ -3,6 +3,7 @@ package openvirtualbank.site.domain.global.error;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import openvirtualbank.site.domain.global.common.ApiResponse;
 import openvirtualbank.site.domain.global.error.ErrorResponse.FieldErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("[MethodArgumentNotValidException] 발생 지점 : {} | {} ", httpRequest.getMethod(), httpRequest.getRequestURI());
 
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_VALID, httpRequest, fieldErrors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(errorResponse));
     }
 
     //http 요청으로 온 RequestBody 누락
@@ -49,7 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("[HttpMessageNotReadableException] 발생 지점 : {} | {} ", httpRequest.getMethod(), httpRequest.getRequestURI());
 
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.REQUEST_BODY_NOT_VALID, httpRequest);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(errorResponse));
     }
 
 
@@ -62,7 +63,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("[NoResourceFoundException] 발생 지점 : {} | {} ", httpRequest.getMethod(), httpRequest.getRequestURI());
 
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND, httpRequest);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.failure(errorResponse));
     }
 
     //http 요청으로 온 RequestParameter 누락
@@ -74,7 +75,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("[MissingServletRequestParameterException] 발생 지점 : {} | {} ", httpRequest.getMethod(), httpRequest.getRequestURI());
 
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.MISSING_REQUEST_PARAMETER, httpRequest);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(errorResponse));
     }
 
 }
