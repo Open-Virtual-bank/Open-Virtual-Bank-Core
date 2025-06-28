@@ -9,11 +9,11 @@ public class AuthInfo {
 		this.role = role;
 	}
 
-	public String getUsername() {
+	public String getId() {
 		return username;
 	}
 
-	public String getRoles() {
+	public String getRole() {
 		return this.role;
 	}
 }
