@@ -28,22 +28,21 @@ dependencyManagement {
 }
 
 dependencies {
-	// Spring Cloud Gateway (WebFlux 기반)
-	implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webflux'
+	//Spring cloud gateway
+	implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
 
-	// Kafka
-	implementation 'org.springframework.kafka:spring-kafka'
-
-	// 테스트
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation 'io.projectreactor:reactor-test'
-	testCompileOnly 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
-
-	// lombok
-	compileOnly 'org.projectlombok:lombok'
+	//Lombok
+	implementation 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	//jwt token
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
