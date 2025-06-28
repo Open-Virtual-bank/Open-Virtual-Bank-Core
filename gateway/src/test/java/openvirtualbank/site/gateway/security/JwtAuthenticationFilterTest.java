@@ -1,5 +1,6 @@
 package openvirtualbank.site.gateway.security;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,7 @@ public class JwtAuthenticationFilterTest {
 	private int port;
 
 	@Test
+	@DisplayName("만료된 토큰시 401 에러")
 	public void expiredTokenTest() {
 		String url = "http://localhost:" + port + "/gateway-test";
 		String token = jwtTokenProvider.createJwt("test", "test_role", -3000L);
@@ -32,6 +34,7 @@ public class JwtAuthenticationFilterTest {
 	}
 
 	@Test
+	@DisplayName("잘못된 형식의 토큰일때 401 에러")
 	public void unavailableTokenTest() {
 		String url = "http://localhost:" + port + "/gateway-test";
 		String token = jwtTokenProvider.createJwt("test", "test_role", -3000L);
