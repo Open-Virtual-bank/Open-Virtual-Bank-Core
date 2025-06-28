@@ -1,10 +1,8 @@
-package openvirtualbank.site.member.global.error;
+package openvirtualbank.site.domain.global.error;
 
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import openvirtualbank.site.domain.global.error.ErrorCode;
-import openvirtualbank.site.domain.global.error.ErrorResponse;
 import openvirtualbank.site.domain.global.error.ErrorResponse.FieldErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
