@@ -35,6 +35,9 @@ dependencies {
 
     //env
     implementation 'me.paulschwarz:spring-dotenv:3.0.0'
+
+    //올바른 형식의 이메일 검증을 위한 의존성
+    implementation 'commons-validator:commons-validator:1.7'
 }
 
 tasks.named('test') {
