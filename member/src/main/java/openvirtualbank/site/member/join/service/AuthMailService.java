@@ -18,17 +18,15 @@ import openvirtualbank.site.member.join.util.RedisUtil;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class AuthMailService {
 
-	private static final Long EXPIRATION = 1800000L; // 30분
+	private static final Long EXPIRATION = 180000L; // 30분
 	private final RedisUtil redisUtil;
 	private final RandomGenerator randomGenerator;
 	private final SaltGenerator saltGenerator;
 	private final SendMailService sendMailService;
 	private final RateLimitService rateLimitService;
 
-	@Transactional
 	public AuthNumberResponse sendCodeEmail(String email) throws NoSuchAlgorithmException {
 		int authNumber = randomGenerator.makeRandomNumber();
 		String title = "회원 가입 인증 이메일입니다.";
@@ -39,7 +37,7 @@ public class AuthMailService {
 		// 30분 이내에 10번 미만으로 인증번호 전송 시
 		if (rateLimitService.checkAPICall(email)) {
 			sendMailService.sendEmail(email, title, content);
-		}else{
+		} else {
 			throw new MemberException(TOO_MANY_REQUESTS);
 		}
 		// 레디스에 인증번호 저장
@@ -49,10 +47,12 @@ public class AuthMailService {
 		return new AuthNumberResponse(key, authNumber);
 	}
 
-	@Transactional(readOnly = true)
-	public VerifyResponse verifyCode(String uuid, int AuthNumber) throws Exception{
-		String findCode = (String) redisUtil.findEmailAuthNumberByKey(uuid);
+	public VerifyResponse verifyCode(String uuid, int AuthNumber, String email) throws Exception {
+		String findCode = (String)redisUtil.findEmailAuthNumberByKey(uuid);
 		boolean status = String.valueOf(AuthNumber).equals(findCode);
+		if (status) {
+			redisUtil.deleteKey(uuid, email);
+		}
 		return new VerifyResponse(status);
 	}
 }
