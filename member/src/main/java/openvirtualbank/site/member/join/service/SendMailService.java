@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class SendMailService {
 	@Value("${spring.email.username}")
 	private String username;
 
+	@Async("mailExecutor")
 	public void sendEmail(String to, String subject, String content) {
 		MimeMessagePreparator messagePreparator =
 			mimeMessage -> {
