@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.3'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'java-library'
 }
 
 group = 'openvirtualbank.site'
@@ -19,7 +20,7 @@ repositories {
 
 dependencies {
     // LOMBOK
-    implementation 'org.projectlombok:lombok'
+    api 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
     // 테스트 코드용 Lombok 설정 추가
@@ -27,14 +28,14 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     // RDB
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    api 'org.springframework.boot:spring-boot-starter-validation'
     // 테스트를 위한 h2 의존성
     testImplementation 'com.h2database:h2'
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
