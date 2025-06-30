@@ -1,4 +1,4 @@
-package openvirtualbank.site.gateway.global.security;
+package openvirtualbank.site.gateway.global.security.jwt;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -8,7 +8,6 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
-import openvirtualbank.site.gateway.global.security.dto.AuthInfo;
 
 @Slf4j
 @Component
@@ -31,16 +30,22 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
 		return (exchange, chain) -> {
 			String token = extractToken(exchange.getRequest());
 
+			log.info("token={}", jwtTokenProvider.createJwt("test", "test_role", 60000L));
+
 			if (token == null || !jwtTokenProvider.validateToken(token)) {
 				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
 				return exchange.getResponse().setComplete();
 			}
 
 			String id = jwtTokenProvider.getId(token);
-			String roles = jwtTokenProvider.getRole(token);
+			String role = jwtTokenProvider.getRole(token);
 
-			return chain.filter(exchange)
-				.contextWrite(ctx -> ctx.put("user", new AuthInfo(id, roles)));
+			ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
+				.header("X-User-Id", id)
+				.header("X-User-Role", role)
+				.build();
+
+			return chain.filter(exchange.mutate().request(modifiedRequest).build());
 		};
 	}
 

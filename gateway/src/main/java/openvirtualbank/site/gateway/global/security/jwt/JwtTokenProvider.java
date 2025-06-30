@@ -1,4 +1,4 @@
-package openvirtualbank.site.gateway.global.security;
+package openvirtualbank.site.gateway.global.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
