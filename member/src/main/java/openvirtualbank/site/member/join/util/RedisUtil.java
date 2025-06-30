@@ -50,4 +50,11 @@ public class RedisUtil {
 		String hashedEmail = sha256(email);
 		redisTemplate.opsForValue().set(EMAIL_API_CALL_COUNT + hashedEmail, s, expiration, TimeUnit.MILLISECONDS);
 	}
+
+	public Object findEmailAuthNumberByKey(String key) throws NoSuchAlgorithmException {
+		String salt = redisTemplate.opsForValue().get(SALT_PREFIX + key);
+
+		String authNumberKey = generateAuthNumberKey(key, salt);
+		return redisTemplate.opsForValue().get(authNumberKey);
+	}
 }

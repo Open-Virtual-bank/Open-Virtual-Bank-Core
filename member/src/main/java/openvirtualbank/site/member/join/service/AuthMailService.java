@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import openvirtualbank.site.member.join.dto.response.AuthNumberResponse;
 import openvirtualbank.site.domain.global.exception.MemberException;
+import openvirtualbank.site.member.join.dto.response.VerifyResponse;
 import openvirtualbank.site.member.join.generator.RandomGenerator;
 import openvirtualbank.site.member.join.generator.SaltGenerator;
 import openvirtualbank.site.member.join.util.RedisUtil;
@@ -46,5 +47,12 @@ public class AuthMailService {
 		// 레디스에 salt 저장
 		redisUtil.saveSalt(key, salt, EXPIRATION);
 		return new AuthNumberResponse(key, authNumber);
+	}
+
+	@Transactional(readOnly = true)
+	public VerifyResponse verifyCode(String uuid, int AuthNumber) throws Exception{
+		String findCode = (String) redisUtil.findEmailAuthNumberByKey(uuid);
+		boolean status = String.valueOf(AuthNumber).equals(findCode);
+		return new VerifyResponse(status);
 	}
 }
