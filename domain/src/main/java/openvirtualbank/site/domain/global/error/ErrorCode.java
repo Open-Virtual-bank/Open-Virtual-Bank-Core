@@ -15,7 +15,9 @@ public enum ErrorCode {
 	MISSING_REQUEST_PARAMETER(HttpStatus.BAD_REQUEST, "GLB-04", "요청 파라미터가 누락되었습니다"),
 
 	//member
-	HASHING_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "MB-01", "서버에서 암호화 처리 중 오류가 발생했습니다");
+	HASHING_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "MB-01", "서버에서 암호화 처리 중 오류가 발생했습니다"),
+	TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "MB-02", "요청이 너무 많습니다. 잠시 후 다시 시도해주세요");
+
 
 	private final HttpStatus httpStatus;
 	private final String code;

@@ -1,5 +1,7 @@
 package openvirtualbank.site.member.join.service;
 
+import static openvirtualbank.site.domain.global.error.ErrorCode.*;
+
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import openvirtualbank.site.member.join.dto.response.AuthNumberResponse;
+import openvirtualbank.site.domain.global.exception.MemberException;
 import openvirtualbank.site.member.join.generator.RandomGenerator;
 import openvirtualbank.site.member.join.generator.SaltGenerator;
 import openvirtualbank.site.member.join.util.RedisUtil;
@@ -22,6 +25,7 @@ public class AuthMailService {
 	private final RandomGenerator randomGenerator;
 	private final SaltGenerator saltGenerator;
 	private final SendMailService sendMailService;
+	private final RateLimitService rateLimitService;
 
 	@Transactional
 	public AuthNumberResponse sendCodeEmail(String email) throws NoSuchAlgorithmException {
@@ -31,9 +35,12 @@ public class AuthMailService {
 
 		String key = UUID.randomUUID().toString();
 		String salt = saltGenerator.generateSalt();
-
-		// 이메일 전송
-		sendMailService.sendEmail(email, title, content);
+		// 30분 이내에 10번 미만으로 인증번호 전송 시
+		if (rateLimitService.checkAPICall(email)) {
+			sendMailService.sendEmail(email, title, content);
+		}else{
+			throw new MemberException(TOO_MANY_REQUESTS);
+		}
 		// 레디스에 인증번호 저장
 		redisUtil.saveAuthNumber(key, salt, String.valueOf(authNumber), EXPIRATION);
 		// 레디스에 salt 저장

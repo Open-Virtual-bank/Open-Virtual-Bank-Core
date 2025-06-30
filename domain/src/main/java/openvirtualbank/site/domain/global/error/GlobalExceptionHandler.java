@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import openvirtualbank.site.domain.global.common.ApiResponse;
 import openvirtualbank.site.domain.global.error.ErrorResponse.FieldErrorResponse;
+import openvirtualbank.site.domain.global.exception.MemberException;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -96,6 +97,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.HASHING_FAILURE, httpRequest);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.failure(errorResponse));
+	}
+
+	@ExceptionHandler(MemberException.class)
+	protected ResponseEntity<Object> handleMemberException(MemberException ex,
+		HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+		HttpServletRequest httpRequest = ((ServletWebRequest)request).getRequest();
+
+		log.error("[MemberException] : {}", ex.getMessage());
+		log.error("[MemberException] 발생 지점 : {} | {} ", httpRequest.getMethod(),
+			httpRequest.getRequestURI());
+
+		ErrorResponse errorResponse = ErrorResponse.of(ex.getErrorCode(), httpRequest);
+		return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(ApiResponse.failure(errorResponse));
 	}
 
 }
