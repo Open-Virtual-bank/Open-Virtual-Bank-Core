@@ -10,6 +10,6 @@ public class RandomGenerator {
 
 	public int makeRandomNumber() {
 
-		return random.nextInt(888888) + 111111;
+		return random.nextInt(888889) + 111111;
 	}
 }

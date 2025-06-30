@@ -38,6 +38,8 @@ dependencies {
 
     //올바른 형식의 이메일 검증을 위한 의존성
     implementation 'commons-validator:commons-validator:1.7'
+    //테스트 시, webClient 사용을 위한 webflux 의존성 추가
+    testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 tasks.named('test') {
