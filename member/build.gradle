@@ -20,7 +20,8 @@ repositories {
 dependencies {
     implementation project(':domain')
 
-    //테스트 의존성은 모듈 단위로 적용
+    //lombok
+    annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
