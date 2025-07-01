@@ -101,8 +101,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(MemberException.class)
 	protected ResponseEntity<Object> handleMemberException(MemberException ex,
-		HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		HttpServletRequest httpRequest = ((ServletWebRequest)request).getRequest();
+		HttpServletRequest httpRequest) {
 
 		log.error("[MemberException] : {}", ex.getMessage());
 		log.error("[MemberException] 발생 지점 : {} | {} ", httpRequest.getMethod(),
