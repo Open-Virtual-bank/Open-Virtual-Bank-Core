@@ -41,7 +41,7 @@ public class JoinMemberController {
 	public ResponseEntity<ApiResponse<VerifyResponse>> verifyEmail(@RequestBody @Valid VerifyRequest request) throws
 		Exception {
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(authMailService.verifyCode(request.uuid(), request.AuthNumber(), request.email())));
+			.body(ApiResponse.success(authMailService.verifyCode(request.key(), request.AuthNumber(), request.email())));
 	}
 
 	@PostMapping("/member-join")
