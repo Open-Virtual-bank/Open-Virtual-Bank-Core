@@ -61,7 +61,7 @@ public class RedisUtil {
 		String salt = redisTemplate.opsForValue().get(SALT_PREFIX + key);
 		String combinedKey = generateAuthNumberKey(key, salt);
 		String hashedEmail = sha256(email);
-		redisTemplate.delete(AUTH_NUMBER_PREFIX + combinedKey);
+		redisTemplate.delete(combinedKey);
 		redisTemplate.delete(SALT_PREFIX + key);
 		redisTemplate.delete(EMAIL_API_CALL_COUNT + hashedEmail);
 

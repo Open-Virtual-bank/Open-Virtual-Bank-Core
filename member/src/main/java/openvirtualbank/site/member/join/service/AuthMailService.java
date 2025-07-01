@@ -44,7 +44,7 @@ public class AuthMailService {
 		redisUtil.saveAuthNumber(key, salt, String.valueOf(authNumber), EXPIRATION);
 		// 레디스에 salt 저장
 		redisUtil.saveSalt(key, salt, EXPIRATION);
-		return new AuthNumberResponse(key, authNumber);
+		return new AuthNumberResponse(key);
 	}
 
 	public VerifyResponse verifyCode(String uuid, int AuthNumber, String email) throws Exception {
