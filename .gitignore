@@ -6,7 +6,6 @@ build/
 !**/src/test/**/build/
 
 ## inner info ###
-**/application.yml
 **/.env
 
 ### STS ###
