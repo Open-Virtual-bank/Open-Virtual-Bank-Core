@@ -1,16 +1,15 @@
 package openvirtualbank.site.member.join.service;
 
-import static openvirtualbank.site.domain.global.error.ErrorCode.*;
+import static openvirtualbank.site.member.exception.MemberErrorCode.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import openvirtualbank.site.member.exception.MemberException;
 import openvirtualbank.site.member.join.dto.response.AuthNumberResponse;
-import openvirtualbank.site.domain.global.exception.MemberException;
 import openvirtualbank.site.member.join.dto.response.VerifyResponse;
 import openvirtualbank.site.member.join.generator.RandomGenerator;
 import openvirtualbank.site.member.join.generator.SaltGenerator;
@@ -20,14 +19,14 @@ import openvirtualbank.site.member.join.util.RedisUtil;
 @RequiredArgsConstructor
 public class AuthMailService {
 
-	private static final Long EXPIRATION = 180000L; // 30분
+	private static final Long EXPIRATION = 180000L; // 3분
 	private final RedisUtil redisUtil;
 	private final RandomGenerator randomGenerator;
 	private final SaltGenerator saltGenerator;
 	private final SendMailService sendMailService;
 	private final RateLimitService rateLimitService;
 
-	public AuthNumberResponse sendCodeEmail(String email) throws NoSuchAlgorithmException {
+	public AuthNumberResponse sendCodeEmail(String email) {
 		int authNumber = randomGenerator.makeRandomNumber();
 		String title = "회원 가입 인증 이메일입니다.";
 		String content = "인증 번호는 " + authNumber + "입니다.";
@@ -47,7 +46,7 @@ public class AuthMailService {
 		return new AuthNumberResponse(key);
 	}
 
-	public VerifyResponse verifyCode(String uuid, int AuthNumber, String email) throws Exception {
+	public VerifyResponse verifyCode(String uuid, int AuthNumber, String email) {
 		String findCode = (String)redisUtil.findEmailAuthNumberByKey(uuid);
 		boolean status = String.valueOf(AuthNumber).equals(findCode);
 		if (status) {

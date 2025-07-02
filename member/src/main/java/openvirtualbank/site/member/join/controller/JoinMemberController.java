@@ -31,23 +31,21 @@ public class JoinMemberController {
 	private final MemberService memberService;
 
 	@PostMapping("/email/send-code")
-	public ResponseEntity<ApiResponse<AuthNumberResponse>> sendEmail(@RequestBody @Valid EmailRequest request) throws
-		NoSuchAlgorithmException {
+	public ResponseEntity<ApiResponse<AuthNumberResponse>> sendEmail(@RequestBody @Valid EmailRequest request) {
 		AuthNumberResponse response = authMailService.sendCodeEmail(request.email());
 		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(response));
 	}
 
 	@PostMapping("/email/verify-code")
-	public ResponseEntity<ApiResponse<VerifyResponse>> verifyEmail(@RequestBody @Valid VerifyRequest request) throws
-		Exception {
+	public ResponseEntity<ApiResponse<VerifyResponse>> verifyEmail(@RequestBody @Valid VerifyRequest request) {
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(ApiResponse.success(authMailService.verifyCode(request.key(), request.AuthNumber(), request.email())));
+			.body(
+				ApiResponse.success(authMailService.verifyCode(request.key(), request.AuthNumber(), request.email())));
 	}
 
 	@PostMapping("/member-join")
-	public ResponseEntity<ApiResponse<MemberResponse>> joinMember(@RequestBody @Valid MemberRequest request){
+	public ResponseEntity<ApiResponse<MemberResponse>> joinMember(@RequestBody @Valid MemberRequest request) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(memberService.joinMember(request)));
 	}
-
 
 }

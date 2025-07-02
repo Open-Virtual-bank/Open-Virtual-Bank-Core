@@ -37,12 +37,25 @@ public class ErrorResponse {
 		this.requestURI = request.getRequestURI();
 	}
 
+	@Builder
+	public ErrorResponse(String errorCode, String errorMessage, HttpServletRequest request) {
+		this.timestamp = LocalDateTime.now();
+		this.code = errorCode;
+		this.message = errorMessage;
+		this.method = request.getMethod();
+		this.requestURI = request.getRequestURI();
+	}
+
 	public static ErrorResponse of(ErrorCode errorCode, HttpServletRequest request, List<FieldErrorResponse> errors) {
 		return new ErrorResponse(errorCode, request, errors);
 	}
 
 	public static ErrorResponse of(ErrorCode errorCode, HttpServletRequest request) {
 		return new ErrorResponse(errorCode, request);
+	}
+
+	public static ErrorResponse of(String errorCode, String errorMessage, HttpServletRequest request) {
+		return new ErrorResponse(errorCode, errorMessage, request);
 	}
 
 	@Getter

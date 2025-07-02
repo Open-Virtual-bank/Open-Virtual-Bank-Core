@@ -14,9 +14,8 @@ public class RateLimitService {
 	private static final Long EXPIRATION = 1800000L;
 	private final RedisUtil redisUtil;
 
-	public boolean checkAPICall(String email) throws NoSuchAlgorithmException {
+	public boolean checkAPICall(String email) {
 		String apiCall = redisUtil.findAPICallByKey(email);
-		System.out.println(apiCall);
 		if (apiCall == null) {
 			redisUtil.saveAPICall(email, "1", EXPIRATION);
 			return true;

@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import openvirtualbank.site.domain.global.exception.MemberException;
 import openvirtualbank.site.member.entity.Member;
 import openvirtualbank.site.member.enums.MemberRole;
+import openvirtualbank.site.member.exception.MemberException;
 import openvirtualbank.site.member.join.dto.request.MemberRequest;
 import openvirtualbank.site.member.join.dto.response.MemberResponse;
 import openvirtualbank.site.member.join.service.MemberService;
@@ -56,7 +56,7 @@ public class JoinMemberTest {
 			memberService.joinMember(member2);
 			fail();
 		} catch (MemberException ex) {
-			Assertions.assertThat(ex.getMessage()).isEqualTo("이미 사용 중인 이메일입니다.");
+			Assertions.assertThat(ex.getErrorMessage()).isEqualTo("이미 사용 중인 이메일입니다.");
 		}
 	}
 }

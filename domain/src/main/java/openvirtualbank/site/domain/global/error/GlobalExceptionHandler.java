@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import openvirtualbank.site.domain.global.common.ApiResponse;
 import openvirtualbank.site.domain.global.error.ErrorResponse.FieldErrorResponse;
-import openvirtualbank.site.domain.global.exception.MemberException;
+import openvirtualbank.site.domain.global.exception.BusinessException;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -99,16 +99,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.failure(errorResponse));
 	}
 
-	@ExceptionHandler(MemberException.class)
-	protected ResponseEntity<Object> handleMemberException(MemberException ex,
+	@ExceptionHandler(BusinessException.class)
+	protected ResponseEntity<Object> handleMemberException(BusinessException ex,
 		HttpServletRequest httpRequest) {
 
-		log.error("[MemberException] : {}", ex.getMessage());
-		log.error("[MemberException] 발생 지점 : {} | {} ", httpRequest.getMethod(),
+		log.error("[BusinessException] : {}", ex.getErrorMessage());
+		log.error("[BusinessException] 발생 지점 : {} | {} ", httpRequest.getMethod(),
 			httpRequest.getRequestURI());
 
-		ErrorResponse errorResponse = ErrorResponse.of(ex.getErrorCode(), httpRequest);
-		return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(ApiResponse.failure(errorResponse));
+		ErrorResponse errorResponse = ErrorResponse.of(ex.getErrorCode(), ex.getErrorMessage(), httpRequest);
+		return ResponseEntity.status(ex.getStatus()).body(ApiResponse.failure(errorResponse));
 	}
 
 }
