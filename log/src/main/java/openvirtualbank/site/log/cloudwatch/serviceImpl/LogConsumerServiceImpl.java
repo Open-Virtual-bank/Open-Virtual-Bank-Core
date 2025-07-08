@@ -1,9 +1,13 @@
 package openvirtualbank.site.log.cloudwatch.serviceImpl;
 
+import java.util.Set;
+
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import openvirtualbank.site.log.cloudwatch.dto.LogMessage;
@@ -24,27 +28,53 @@ import software.amazon.awssdk.services.cloudwatchlogs.model.ResourceAlreadyExist
 public class LogConsumerServiceImpl implements LogConsumerService {
 
 	private final CloudWatchLogsClient logsClient;
+	private final Validator validator;
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	private static final String LOG_GROUP = "Open-V-Bank";
 
+	@Override
 	public void loggingIntegration(String message) {
+		LogMessage logMessage = parseAndValidate(message, "integration");
+		if (logMessage == null)
+			return;
+
 		try {
-			LogMessage logMessage = objectMapper.readValue(message, LogMessage.class);
 			String logStream = "integration-log-stream";
 			writeToCloudWatch(logMessage, logStream);
 		} catch (Exception e) {
-			log.error("Failed to process log message in loggingIntegration: {}", message, e);
+			log.error("Failed to write integration log: {}", message, e);
 		}
 	}
 
+	@Override
 	public void loggingEachModule(String message) {
+		LogMessage logMessage = parseAndValidate(message, "eachModule");
+		if (logMessage == null)
+			return;
+
 		try {
-			LogMessage logMessage = objectMapper.readValue(message, LogMessage.class);
 			String logStream = logMessage.getSrcChannel() + "-log-stream";
 			writeToCloudWatch(logMessage, logStream);
 		} catch (Exception e) {
-			log.error("Failed to process log message in loggingEachModule: {}", message, e);
+			log.error("Failed to write module log: {}", message, e);
+		}
+	}
+
+	private LogMessage parseAndValidate(String message, String context) {
+		try {
+			LogMessage logMessage = objectMapper.readValue(message, LogMessage.class);
+
+			Set<ConstraintViolation<LogMessage>> violations = validator.validate(logMessage);
+			if (!violations.isEmpty()) {
+				log.warn("[{}] LogMessage validation failed: {}", context, violations);
+				return null;
+			}
+
+			return logMessage;
+		} catch (Exception e) {
+			log.error("[{}] Failed to parse LogMessage: {}", context, e.getMessage());
+			return null;
 		}
 	}
 
